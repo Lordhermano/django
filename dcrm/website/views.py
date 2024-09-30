@@ -3,7 +3,7 @@ from .forms import CreateUserForm,LoginForm
 from django.contrib.auth.models import auth
 from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
-
+from .models import Record
 
 
 # Create your views here.
@@ -48,6 +48,8 @@ def user_logout(request):
 
 @login_required(login_url='my-login')
 def dashboard(request):
-    return render(request, 'website/dashboard.html')
+    my_record = Record.objects.all()
+    context = {'records':my_record}
+    return render(request, 'website/dashboard.html',context=context)
 
     
