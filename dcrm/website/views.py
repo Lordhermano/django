@@ -57,6 +57,8 @@ def create_record(request):
     form = CreateRecordform()
     if request.method == "POST":
         form = CreateRecordform(request.POST)
-        return redirect('dashboard')
+        if form.is_valid():
+            form.save()
+            return redirect('dashboard')
     context = {'create_form':form}
     return render(request,'website/create-record.html', context=context)
