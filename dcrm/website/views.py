@@ -1,5 +1,5 @@
 from django.shortcuts import redirect, render
-from .forms import CreateUserForm,LoginForm,CreateRecordform
+from .forms import CreateUserForm,LoginForm,CreateRecordform,UpdateRecordForm
 from django.contrib.auth.models import auth
 from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
@@ -62,3 +62,29 @@ def create_record(request):
             return redirect('dashboard')
     context = {'create_form':form}
     return render(request,'website/create-record.html', context=context)
+
+@login_required(login_url='my-login')
+def update_record(request, pk):
+    record = Record.objects.get(id=pk)
+    form = UpdateRecordForm(instance=record)
+    if request.method == "POST":
+        form = UpdateRecordForm(request.POST, instance=record)
+        if form.is_valid():
+            form.save()
+            return redirect('dashboard')
+    context = {'update_form':form}
+    return render(request,'website/update-record.html', context=context)
+
+# Read a single record
+
+@login_required(login_url='my-login')
+def singular_record(request, pk):
+    one_record = Record.objects.get(id=pk)
+    context = {'record': one_record}
+    return render(request,'website/view-record.html', context=context)
+
+@login_required(login_url='my-login')
+def delete_record(request, pk):
+    record = Record.objects.get(id=pk)
+    record.delete()
+    return redirect('dashboard')
